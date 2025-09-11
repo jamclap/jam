@@ -13,9 +13,36 @@ type Draw struct {
 	Target *ebiten.Image
 }
 
-type SpriteOp struct {
-	Scale1 Vec2
-	Pos    Vec2
+type Op struct {
+	pos    Vec2
+	scale1 Vec2
+}
+
+func Pos(pos Vec2) Op {
+	return Op{}.Pos(pos)
+}
+
+func PosXY(x, y float64) Op {
+	return Op{}.PosXY(x, y)
+}
+
+func ScaleX(x float64) Op {
+	return Op{}.ScaleX(x)
+}
+
+func (o Op) Pos(pos Vec2) Op {
+	o.pos = pos
+	return o
+}
+
+func (o Op) PosXY(x, y float64) Op {
+	return o.Pos(XY(x, y))
+}
+
+func (o Op) ScaleX(x float64) Op {
+	// TODO Actually int scale?
+	o.scale1.X = (o.scale1.X+1)*x - 1
+	return o
 }
 
 func (d *Draw) Fill(color color.Color) {
@@ -28,7 +55,7 @@ func (d *Draw) ScaleX(x float64) *Draw {
 	return d
 }
 
-func (d *Draw) Sprite(image *ebiten.Image, pos Vec2) {
+func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 	// TODO Keep this cached in draw.
 	options := ebiten.DrawImageOptions{}
 	// options.GeoM.Concat(d.Global)
@@ -39,9 +66,9 @@ func (d *Draw) Sprite(image *ebiten.Image, pos Vec2) {
 	// if op.FlipY {
 	// 	options.GeoM.Scale(1, -1)
 	// }
-	scale := d.Scale1.AddAll(1)
+	scale := op.scale1.AddAll(1)
 	options.GeoM.Scale(scale.X, scale.Y)
-	options.GeoM.Translate(pos.X, pos.Y)
+	options.GeoM.Translate(op.pos.X, op.pos.Y)
 	offset := Vec2{}
 	if scale.X < 0 {
 		offset.X = -scale.X

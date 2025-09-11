@@ -31,9 +31,7 @@ func (s *State) Update(hub *jam.Hub) {
 
 func (s *State) Draw(draw *jam.Draw) {
 	draw.Fill(color.RGBA{0x2a, 0x3d, 0x74, 0xff})
-	d2 := *draw
-	d2.ScaleX(-1)
-	d2.Sprite(s.Sprites[0], jam.XY(8, 8))
+	draw.Sprite(s.Sprites[0], jam.PosXY(8, 8).ScaleX(-1))
 }
 
 func loadSprites() []*ebiten.Image {
