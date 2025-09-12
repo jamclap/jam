@@ -24,9 +24,9 @@ type Game struct {
 
 func InitState(hub *jam.Hub) jam.Game {
 	return &Game{
-		faceX:   1.0,
+		faceX:   1,
 		floored: false,
-		move:    jam.XY(0.0, 0.0),
+		move:    jam.XY(0, 0.0),
 		pos:     jam.XY(8, 8.0),
 		sprites: jam.LoadSheet(spriteBytes, jam.XY(8, 8)),
 		scale:   2,
