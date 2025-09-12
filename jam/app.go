@@ -7,41 +7,41 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type App interface {
+type Game interface {
 	Update(hub *Hub)
 	Draw(draw *Draw)
 }
 
-type game struct {
-	app  App
+type ebitenGame struct {
+	game Game
 	draw Draw
 	hub  *Hub
 }
 
-func Run(init func(hub *Hub) App) {
+func Run(init func(hub *Hub) Game) {
 	ebiten.SetScreenClearedEveryFrame(false)
 	ebiten.SetWindowSize(960, 540)
 	hub := &Hub{}
 	app := init(hub)
 	app.Update(hub)
-	g := &game{app: app, hub: hub}
-	if err := ebiten.RunGame(g); err != nil {
+	e := &ebitenGame{game: app, hub: hub}
+	if err := ebiten.RunGame(e); err != nil {
 		log.Fatal(err)
 	}
 }
 
-func (g *game) Update() error {
+func (e *ebitenGame) Update() error {
 	checkFullscreen()
-	g.app.Update(g.hub)
+	e.game.Update(e.hub)
 	return nil
 }
 
-func (g *game) Draw(image *ebiten.Image) {
-	g.draw.Target = image
-	g.app.Draw(&g.draw)
+func (e *ebitenGame) Draw(image *ebiten.Image) {
+	e.draw.Target = image
+	e.game.Draw(&e.draw)
 }
 
-func (g *game) Layout(
+func (e *ebitenGame) Layout(
 	outsideWidth, outsideHeight int,
 ) (screenWidth, screenHeight int) {
 	screenWidth = 240
