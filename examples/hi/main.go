@@ -79,7 +79,7 @@ func (g *Game) handleInput() {
 		}
 	} else {
 		if g.move.Y < 0 {
-			g.move.Y += 0.3
+			g.move.Y += 0.5
 		}
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
