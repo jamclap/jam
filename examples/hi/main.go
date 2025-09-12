@@ -2,12 +2,12 @@ package main
 
 import (
 	_ "embed"
-	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/jamclap/jam/jam"
+	"github.com/jamclap/jam/jam/pal"
 )
 
 func main() {
@@ -36,14 +36,13 @@ func InitState(hub *jam.Hub) jam.Game {
 }
 
 func (g *Game) Update(hub *jam.Hub) {
-	g.handleInput()
+	g.handleInput(hub)
 	g.applyPhysics()
 	g.updateFrame()
 }
 
 func (g *Game) Draw(draw *jam.Draw) {
-	// TODO Include some standard palettes.
-	draw.Fill(color.RGBA{0x2a, 0x3d, 0x74, 0xff})
+	draw.Fill(pal.Jam[pal.JamBlue1])
 	draw.Sprite(
 		g.sprites.AtXY(0, int(g.frame)),
 		jam.Pos(g.pos).Scale(g.scale).ScaleX(g.faceX),
@@ -72,9 +71,10 @@ func (g *Game) applyPhysics() {
 	g.pos.X = min(g.pos.X, 240-size.X)
 }
 
-func (g *Game) handleInput() {
+func (g *Game) handleInput(hub *jam.Hub) {
+	// TODO Use hub input info.
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) && g.floored {
+		if inpututil.KeyPressDuration(ebiten.KeyArrowUp) < 20 && g.floored {
 			g.move.Y = -6
 		}
 	} else {

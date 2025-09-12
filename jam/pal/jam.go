@@ -1,0 +1,74 @@
+package pal
+
+import "image/color"
+
+const (
+	JamBrown0   int = iota // Color 0
+	JamBrown1              // Color 1
+	JamBrown2              // Color 2
+	JamBrown3              // Color 3
+	JamBrown4              // Color 4
+	JamBrown5              // Color 5
+	JamBrown6              // Color 6
+	JamGreen3              // Color 7
+	JamGreen2              // Color 8
+	JamGreen1              // Color 9
+	JamGreen0              // Color 10
+	JamGray0               // Color 11
+	JamGray1               // Color 12
+	JamGray2               // Color 13
+	JamGray3               // Color 14
+	JamGray4               // Color 15
+	JamGray5               // Color 16
+	JamBlue4               // Color 17
+	JamBlue3               // Color 18
+	JamBlue2               // Color 19
+	JamBlue1               // Color 20
+	JamBlue0               // Color 21
+	JamPurple0             // Color 22
+	JamPurple1             // Color 23
+	JamPurple2             // Color 24
+	JamPurple3             // Color 25
+	JamWarm4               // Color 26
+	JamWarm3               // Color 27
+	JamWarm2               // Color 28
+	JamWarm1               // Color 29
+	JamWarm0               // Color 30
+	JamPurple1B            // Color 31
+)
+
+// Zughy32 but with contrast dialed up a bit and yellow instead of bonus gray.
+var Jam = []color.RGBA{
+	{0x3d, 0x17, 0x2f, 0xff}, // Color 0
+	{0x58, 0x26, 0x38, 0xff}, // Color 1
+	{0x77, 0x39, 0x41, 0xff}, // Color 2
+	{0x9f, 0x54, 0x4b, 0xff}, // Color 3
+	{0xbf, 0x76, 0x51, 0xff}, // Color 4
+	{0xf0, 0xa0, 0x5a, 0xff}, // Color 5
+	{0xf6, 0xcd, 0xa0, 0xff}, // Color 6
+	{0xb6, 0xd6, 0x2f, 0xff}, // Color 7
+	{0x6d, 0xa9, 0x23, 0xff}, // Color 8
+	{0x2a, 0x78, 0x39, 0xff}, // Color 9
+	{0x2f, 0x52, 0x4f, 0xff}, // Color 10
+	{0x1c, 0x14, 0x19, 0xff}, // Color 11
+	{0x53, 0x4b, 0x4b, 0xff}, // Color 12
+	{0x7a, 0x6c, 0x6d, 0xff}, // Color 13
+	{0x9f, 0x91, 0x8c, 0xff}, // Color 14
+	{0xd0, 0xc6, 0xb8, 0xff}, // Color 15
+	{0xe0, 0xf8, 0xf7, 0xff}, // Color 16
+	{0x88, 0xed, 0xf3, 0xff}, // Color 17
+	{0x0a, 0xcd, 0xe0, 0xff}, // Color 18
+	{0x2a, 0x74, 0xa7, 0xff}, // Color 19
+	{0x2a, 0x3d, 0x74, 0xff}, // Color 20
+	{0x2a, 0x1e, 0x42, 0xff}, // Color 21
+	{0x4f, 0x34, 0x5f, 0xff}, // Color 22
+	{0x8c, 0x3d, 0x8a, 0xff}, // Color 23
+	{0xce, 0x5a, 0x91, 0xff}, // Color 24
+	{0xff, 0xad, 0xb6, 0xff}, // Color 25
+	{0xf6, 0xd3, 0x25, 0xff}, // Color 26 - Inserted yellow.
+	{0xf6, 0xb4, 0x00, 0xff}, // Color 27
+	{0xf6, 0x7b, 0x00, 0xff}, // Color 28
+	{0xe7, 0x3e, 0x19, 0xff}, // Color 29
+	{0xa8, 0x2d, 0x2d, 0xff}, // Color 30
+	{0x7f, 0x6c, 0x92, 0xff}, // Color 31
+}
