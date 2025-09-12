@@ -4,8 +4,6 @@ import (
 	_ "embed"
 	"math"
 
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/jamclap/jam/jam"
 	"github.com/jamclap/jam/jam/pal"
 )
@@ -36,7 +34,7 @@ func InitState(hub *jam.Hub) jam.Game {
 }
 
 func (g *Game) Update(hub *jam.Hub) {
-	g.handleInput(hub)
+	g.handleInput(hub.Control)
 	g.applyPhysics()
 	g.updateFrame()
 }
@@ -44,6 +42,8 @@ func (g *Game) Update(hub *jam.Hub) {
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(pal.Jam[pal.JamBlue1])
 	draw.Sprite(
+		// TODO Encourage [0.0, 1.0) indexed frame sequences?
+		// TODO Identify by metadata files, ideally from editor.
 		g.sprites.AtXY(0, int(g.frame)),
 		jam.Pos(g.pos).Scale(g.scale).ScaleX(g.faceX),
 	)
@@ -71,10 +71,9 @@ func (g *Game) applyPhysics() {
 	g.pos.X = min(g.pos.X, 240-size.X)
 }
 
-func (g *Game) handleInput(hub *jam.Hub) {
-	// TODO Use hub input info.
-	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
-		if inpututil.KeyPressDuration(ebiten.KeyArrowUp) < 20 && g.floored {
+func (g *Game) handleInput(c jam.Control) {
+	if c.Active(jam.ActionUp) {
+		if c.Duration(jam.ActionUp) < 20 && g.floored {
 			g.move.Y = -6
 		}
 	} else {
@@ -82,10 +81,10 @@ func (g *Game) handleInput(hub *jam.Hub) {
 			g.move.Y += 0.5
 		}
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+	if c.Active(jam.ActionLeft) {
 		g.faceX = -1
 		g.move.X = -3
-	} else if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+	} else if c.Active(jam.ActionRight) {
 		g.faceX = 1
 		g.move.X = 3
 	} else {

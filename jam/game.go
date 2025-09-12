@@ -21,7 +21,9 @@ type ebitenGame struct {
 func Run(init func(hub *Hub) Game) {
 	ebiten.SetScreenClearedEveryFrame(false)
 	ebiten.SetWindowSize(960, 540)
-	hub := &Hub{}
+	hub := &Hub{
+		Control: &EbitenControl{},
+	}
 	app := init(hub)
 	app.Update(hub)
 	e := &ebitenGame{game: app, hub: hub}
