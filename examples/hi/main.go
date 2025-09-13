@@ -23,6 +23,7 @@ type Game struct {
 }
 
 func InitState(hub *jam.Hub) jam.Game {
+	hub.Window.SetTitle("Jumping Demo for Jam")
 	return &Game{
 		faceX:   1,
 		floored: false,
@@ -72,8 +73,8 @@ func (g *Game) applyPhysics() {
 }
 
 func (g *Game) handleInput(c jam.Control) {
-	if c.Active(jam.ActionUp) {
-		if c.Duration(jam.ActionUp) < 20 && g.floored {
+	if c.Active(jam.ActionA) {
+		if c.Duration(jam.ActionA) < 20 && g.floored {
 			g.move.Y = -6
 		}
 	} else {

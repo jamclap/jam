@@ -23,6 +23,7 @@ func Run(init func(hub *Hub) Game) {
 	ebiten.SetWindowSize(960, 540)
 	hub := &Hub{
 		Control: &EbitenControl{},
+		Window:  &EbitenWindow{},
 	}
 	app := init(hub)
 	app.Update(hub)
@@ -34,6 +35,7 @@ func Run(init func(hub *Hub) Game) {
 
 func (e *ebitenGame) Update() error {
 	checkFullscreen()
+	e.hub.update()
 	e.game.Update(e.hub)
 	return nil
 }

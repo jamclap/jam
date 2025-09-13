@@ -26,26 +26,35 @@ type Control interface {
 // 	return false
 // }
 
-type EbitenControl struct{}
+type EbitenControl struct {
+	gamepad *ebiten.GamepadID
+}
 
 func (e *EbitenControl) Active(a Action) bool {
 	// TODO Player 1 vs player 2 controls, etc.
 	// TODO Different mapping options for keyboard?
 	switch a {
 	case ActionMenu:
-		return ebiten.IsKeyPressed(ebiten.KeyEscape)
+		return ebiten.IsKeyPressed(ebiten.KeyEscape) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonCenterRight)
 	case ActionUp:
-		return ebiten.IsKeyPressed(ebiten.KeyArrowUp)
+		return ebiten.IsKeyPressed(ebiten.KeyArrowUp) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonLeftTop)
 	case ActionDown:
-		return ebiten.IsKeyPressed(ebiten.KeyArrowUp)
+		return ebiten.IsKeyPressed(ebiten.KeyArrowDown) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonLeftBottom)
 	case ActionLeft:
-		return ebiten.IsKeyPressed(ebiten.KeyArrowLeft)
+		return ebiten.IsKeyPressed(ebiten.KeyArrowLeft) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonLeftLeft)
 	case ActionRight:
-		return ebiten.IsKeyPressed(ebiten.KeyArrowRight)
+		return ebiten.IsKeyPressed(ebiten.KeyArrowRight) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonLeftRight)
 	case ActionA:
-		return ebiten.IsKeyPressed(ebiten.KeyZ)
+		return ebiten.IsKeyPressed(ebiten.KeyZ) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonRightBottom)
 	case ActionB:
-		return ebiten.IsKeyPressed(ebiten.KeyX)
+		return ebiten.IsKeyPressed(ebiten.KeyX) ||
+			e.gamepadPressed(ebiten.StandardGamepadButtonRightRight)
 	}
 	return false
 }
@@ -55,23 +64,57 @@ func (e *EbitenControl) Duration(a Action) int {
 	// TODO Different mapping options for keyboard?
 	switch a {
 	case ActionMenu:
-		return inpututil.KeyPressDuration(ebiten.KeyEscape)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyEscape),
+			e.gamepadDuration(ebiten.StandardGamepadButtonCenterRight),
+		)
 	case ActionUp:
-		return inpututil.KeyPressDuration(ebiten.KeyArrowUp)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyArrowUp),
+			e.gamepadDuration(ebiten.StandardGamepadButtonLeftTop),
+		)
 	case ActionDown:
-		return inpututil.KeyPressDuration(ebiten.KeyArrowUp)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyArrowDown),
+			e.gamepadDuration(ebiten.StandardGamepadButtonLeftBottom),
+		)
 	case ActionLeft:
-		return inpututil.KeyPressDuration(ebiten.KeyArrowLeft)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyArrowLeft),
+			e.gamepadDuration(ebiten.StandardGamepadButtonLeftLeft),
+		)
 	case ActionRight:
-		return inpututil.KeyPressDuration(ebiten.KeyArrowRight)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyArrowRight),
+			e.gamepadDuration(ebiten.StandardGamepadButtonLeftRight),
+		)
 	case ActionA:
-		return inpututil.KeyPressDuration(ebiten.KeyZ)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyZ),
+			e.gamepadDuration(ebiten.StandardGamepadButtonRightBottom),
+		)
 	case ActionB:
-		return inpututil.KeyPressDuration(ebiten.KeyX)
+		return max(
+			inpututil.KeyPressDuration(ebiten.KeyX),
+			e.gamepadDuration(ebiten.StandardGamepadButtonRightRight),
+		)
 	}
 	return 0
 }
 
 func JustActive(c Control, a Action) bool {
 	return c.Duration(a) == 1
+}
+
+func (e *EbitenControl) gamepadDuration(b ebiten.StandardGamepadButton) int {
+	if e.gamepad != nil {
+		return inpututil.StandardGamepadButtonPressDuration(*e.gamepad, b)
+	} else {
+		return 0
+	}
+}
+
+func (e *EbitenControl) gamepadPressed(b ebiten.StandardGamepadButton) bool {
+	return e.gamepad != nil &&
+		ebiten.IsStandardGamepadButtonPressed(*e.gamepad, b)
 }
