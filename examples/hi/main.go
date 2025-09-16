@@ -29,7 +29,7 @@ func InitState(hub *jam.Hub) jam.Game {
 		floored: false,
 		move:    jam.XY(0, 0.0),
 		pos:     jam.XY(8, 8.0),
-		sprites: jam.LoadSheet(spriteBytes, jam.XY(8, 8)),
+		sprites: jam.LoadSheet(sheetBytes, jam.XY(8, 8)),
 		scale:   2,
 	}
 }
@@ -51,7 +51,7 @@ func (g *Game) Draw(draw *jam.Draw) {
 }
 
 func (g *Game) applyPhysics() {
-	size := jam.VecAs[float64](g.sprites.SpriteSize()).MulAll(g.scale)
+	size := jam.Vec2Of[float64](g.sprites.SpriteSize()).MulAll(g.scale)
 	floor := 135.0
 	// Fall if in the air.
 	bottomLeft := g.pos.Add(size)
@@ -105,5 +105,5 @@ func (g *Game) updateFrame() {
 	}
 }
 
-//go:embed sprite.webp
-var spriteBytes []byte
+//go:embed sheet.webp
+var sheetBytes []byte

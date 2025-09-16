@@ -47,6 +47,18 @@ func (v Vec2[T]) DivPoint(p image.Point) Vec2[T] {
 	return v
 }
 
+func (v Vec2[T]) Max(v2 Vec2[T]) Vec2[T] {
+	v.X = max(v.X, v2.X)
+	v.Y = max(v.Y, v2.Y)
+	return v
+}
+
+func (v Vec2[T]) Min(v2 Vec2[T]) Vec2[T] {
+	v.X = min(v.X, v2.X)
+	v.Y = min(v.Y, v2.Y)
+	return v
+}
+
 func (v Vec2[T]) Mul(v2 Vec2[T]) Vec2[T] {
 	v.X *= v2.X
 	v.Y *= v2.Y
@@ -65,13 +77,17 @@ func (v Vec2[T]) MulPoint(p image.Point) Vec2[T] {
 	return v
 }
 
+func (v Vec2[T]) Point() image.Point {
+	return image.Pt(int(v.X), int(v.Y))
+}
+
 func (v Vec2[T]) SubAll(xy T) Vec2[T] {
 	v.X -= xy
 	v.Y -= xy
 	return v
 }
 
-func VecAs[T, U Number](v Vec2[U]) Vec2[T] {
+func Vec2Of[T, U Number](v Vec2[U]) Vec2[T] {
 	w := Vec2[T]{}
 	w.X = T(v.X)
 	w.Y = T(v.Y)
