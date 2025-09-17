@@ -35,6 +35,16 @@ func (v Vec2[T]) AddPoint(p image.Point) Vec2[T] {
 	return v
 }
 
+func (v Vec2[T]) AddX(x T) Vec2[T] {
+	v.X += x
+	return v
+}
+
+func (v Vec2[T]) AddY(y T) Vec2[T] {
+	v.Y += y
+	return v
+}
+
 func (v Vec2[T]) Div(v2 Vec2[T]) Vec2[T] {
 	v.X /= v2.X
 	v.Y /= v2.Y
@@ -79,6 +89,12 @@ func (v Vec2[T]) MulPoint(p image.Point) Vec2[T] {
 
 func (v Vec2[T]) Point() image.Point {
 	return image.Pt(int(v.X), int(v.Y))
+}
+
+func (v Vec2[T]) Sub(v2 Vec2[T]) Vec2[T] {
+	v.X -= v2.X
+	v.Y -= v2.Y
+	return v
 }
 
 func (v Vec2[T]) SubAll(xy T) Vec2[T] {
