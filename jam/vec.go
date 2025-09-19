@@ -103,6 +103,10 @@ func (v Vec2[T]) SubAll(xy T) Vec2[T] {
 	return v
 }
 
+func Vec2FromPoint(p image.Point) Vec2i {
+	return Vec2i{}.AddPoint(p)
+}
+
 func Vec2Of[T, U Number](v Vec2[U]) Vec2[T] {
 	w := Vec2[T]{}
 	w.X = T(v.X)
