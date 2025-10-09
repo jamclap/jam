@@ -51,6 +51,12 @@ func (v Vec2[T]) Div(v2 Vec2[T]) Vec2[T] {
 	return v
 }
 
+func (v Vec2[T]) DivAll(xy T) Vec2[T] {
+	v.X /= xy
+	v.Y /= xy
+	return v
+}
+
 func (v Vec2[T]) DivPoint(p image.Point) Vec2[T] {
 	v.X /= T(p.X)
 	v.Y /= T(p.Y)
@@ -100,6 +106,12 @@ func (v Vec2[T]) Sub(v2 Vec2[T]) Vec2[T] {
 func (v Vec2[T]) SubAll(xy T) Vec2[T] {
 	v.X -= xy
 	v.Y -= xy
+	return v
+}
+
+func (v Vec2[T]) SubPoint(v2 image.Point) Vec2[T] {
+	v.X -= T(v2.X)
+	v.Y -= T(v2.Y)
 	return v
 }
 
