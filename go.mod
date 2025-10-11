@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/HugoSmits86/nativewebp v1.2.0
-	github.com/hajimehoshi/ebiten/v2 v2.9.0
+	github.com/hajimehoshi/ebiten/v2 v2.9.1
 )
 
 require (
