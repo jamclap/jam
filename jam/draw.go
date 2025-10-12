@@ -1,14 +1,15 @@
 package jam
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Draw struct {
-	// Local ebiten.GeoM
-	// Local  ebiten.GeoM
+	// Local ebiten.GeoM?
+	// Local Op?
 	Target *ebiten.Image
 }
 
@@ -91,4 +92,14 @@ func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 	eop.GeoM.Translate(offset.X, offset.Y)
 	// The point of this is make things like flip work well.
 	d.Target.DrawImage(image, &eop)
+}
+
+func (d *Draw) TileLayer(
+	m *TileMap, l *TileLayer, bounds image.Rectangle, op Op,
+) {
+	//
+}
+
+func (d *Draw) TileMap(m *TileMap, pixelBounds image.Rectangle, op Op) {
+	//
 }

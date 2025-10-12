@@ -13,7 +13,8 @@ type Sheet struct {
 	image      *ebiten.Image
 	gridSize   Vec2i
 	spriteSize Vec2i
-	sprites    []*ebiten.Image
+	sprites    Grid[*ebiten.Image]
+	tags       Grid[uint32]
 }
 
 // Excludes any partial space at edges.
@@ -24,7 +25,7 @@ func NewSheet(image *ebiten.Image, spriteSize Vec2i) *Sheet {
 		image:      image,
 		gridSize:   gridSize,
 		spriteSize: spriteSize,
-		sprites:    make([]*ebiten.Image, gridSize.X*gridSize.Y),
+		sprites:    NewGrid[*ebiten.Image](gridSize),
 	}
 }
 
@@ -32,14 +33,15 @@ func (s *Sheet) At(xy Vec2i) *ebiten.Image {
 	if xy.X < 0 || xy.X >= s.gridSize.X || xy.Y < 0 || xy.Y >= s.gridSize.Y {
 		return nil
 	}
-	idx := xy.X*s.gridSize.Y + xy.Y
-	if s.sprites[idx] == nil {
+	sprite := s.sprites.At(xy)
+	if sprite == nil {
 		pixelStart := xy.Mul(s.spriteSize)
 		pixelEnd := pixelStart.Add(s.spriteSize)
 		r := image.Rect(pixelStart.X, pixelStart.Y, pixelEnd.X, pixelEnd.Y)
-		s.sprites[idx] = s.image.SubImage(r).(*ebiten.Image)
+		sprite = s.image.SubImage(r).(*ebiten.Image)
+		s.sprites.SetAt(xy, sprite)
 	}
-	return s.sprites[idx]
+	return sprite
 }
 
 func (s *Sheet) AtXY(x, y int) *ebiten.Image {

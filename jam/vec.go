@@ -3,7 +3,9 @@ package jam
 import "image"
 
 type Number interface {
-	~int | ~int32 | ~int64 | ~float32 | ~float64
+	~float32 | ~float64 |
+		~int | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint16 | ~uint32 | ~uint64
 }
 
 type Vec2f = Vec2[float64]
