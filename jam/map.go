@@ -17,9 +17,16 @@ type TileMap struct {
 	sheets []*Sheet
 }
 
-func NewTileMap(sheets []*Sheet) *TileMap {
+func NewTileMap() *TileMap {
 	return &TileMap{
 		layers: []*TileLayer{&TileLayer{}},
-		sheets: sheets,
 	}
+}
+
+func (m *TileMap) Layers() []*TileLayer {
+	return m.layers
+}
+
+func (l *TileLayer) TileSize() Vec2i {
+	return l.tileSize
 }

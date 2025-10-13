@@ -11,26 +11,32 @@ import (
 
 type Sheet struct {
 	image      *ebiten.Image
-	gridSize   Vec2i
 	spriteSize Vec2i
 	sprites    Grid[*ebiten.Image]
 	tags       Grid[uint32]
 }
 
+type SheetInfo struct {
+	Image      *ebiten.Image
+	SpriteSize Vec2i
+	Tags       Grid[uint32]
+}
+
 // Excludes any partial space at edges.
-func NewSheet(image *ebiten.Image, spriteSize Vec2i) *Sheet {
-	imageSize := image.Bounds().Size()
-	gridSize := Vec2i{}.AddPoint(imageSize).Div(spriteSize)
+func NewSheet(info SheetInfo) *Sheet {
+	imageSize := info.Image.Bounds().Size()
+	gridSize := Vec2i{}.AddPoint(imageSize).Div(info.SpriteSize)
 	return &Sheet{
-		image:      image,
-		gridSize:   gridSize,
-		spriteSize: spriteSize,
+		image:      info.Image,
+		spriteSize: info.SpriteSize,
 		sprites:    NewGrid[*ebiten.Image](gridSize),
+		tags:       info.Tags,
 	}
 }
 
 func (s *Sheet) At(xy Vec2i) *ebiten.Image {
-	if xy.X < 0 || xy.X >= s.gridSize.X || xy.Y < 0 || xy.Y >= s.gridSize.Y {
+	gridSize := s.sprites.size
+	if xy.X < 0 || xy.X >= gridSize.X || xy.Y < 0 || xy.Y >= gridSize.Y {
 		return nil
 	}
 	sprite := s.sprites.At(xy)
@@ -53,6 +59,7 @@ func (s *Sheet) SpriteSize() Vec2i {
 }
 
 // Panics on fail, presuming the bytes are known good.
+// TODO Pass in object with both sprite size and tags.
 func LoadSheet(b []byte, spriteSize Vec2i) *Sheet {
 	// TODO Guess format from bytes.
 	sheetRaw, err := nativewebp.Decode(bytes.NewReader(b))
@@ -60,5 +67,5 @@ func LoadSheet(b []byte, spriteSize Vec2i) *Sheet {
 		log.Panicln(err)
 	}
 	sheet := ebiten.NewImageFromImage(sheetRaw)
-	return NewSheet(sheet, spriteSize)
+	return NewSheet(SheetInfo{Image: sheet, SpriteSize: spriteSize})
 }
