@@ -18,7 +18,11 @@ func (g *Grid[T]) At(xy Vec2i) T {
 		var item T
 		return item
 	}
-	return g.items[xy.Y*g.size.X+xy.X]
+	return g.items[g.Index(xy)]
+}
+
+func (g *Grid[T]) Index(xy Vec2i) int {
+	return xy.Y*g.size.X + xy.X
 }
 
 // Raw item access for fast iteration.
@@ -40,7 +44,7 @@ func (g *Grid[T]) SetAt(xy Vec2i, item T) {
 	if wantedSize != g.size {
 		g.SetSize(wantedSize)
 	}
-	g.items[xy.Y*g.size.X+xy.X] = item
+	g.items[g.Index(xy)] = item
 }
 
 // Copies contents if able. Clips if made smaller than current size.

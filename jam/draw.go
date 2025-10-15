@@ -15,7 +15,7 @@ type Draw struct {
 
 type Op struct {
 	pos    Vec2f
-	scale1 Vec2f
+	scale1 Vec2f // Awkward math to allow zero default.
 }
 
 func Pos(pos Vec2f) Op {
@@ -28,6 +28,15 @@ func PosXY(x, y float64) Op {
 
 func ScaleX(x float64) Op {
 	return Op{}.ScaleX(x)
+}
+
+func (o Op) GetScale() Vec2f {
+	return o.scale1.AddAll(1)
+}
+
+func (o Op) Move(xy Vec2f) Op {
+	o.pos = o.pos.Add(xy)
+	return o
 }
 
 func (o Op) Pos(pos Vec2f) Op {
@@ -78,7 +87,7 @@ func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 	// if op.FlipY {
 	// 	options.GeoM.Scale(1, -1)
 	// }
-	scale := op.scale1.AddAll(1)
+	scale := op.GetScale()
 	eop.GeoM.Scale(scale.X, scale.Y)
 	eop.GeoM.Translate(op.pos.X, op.pos.Y)
 	offset := Vec2f{}
@@ -100,6 +109,36 @@ func (d *Draw) TileLayer(
 	//
 }
 
+// Always draw full tiles but only those touching pixelBounds?
 func (d *Draw) TileMap(m *TileMap, pixelBounds image.Rectangle, op Op) {
-	//
+	sheets := m.Sheets()
+	scale := op.GetScale()
+	for _, layer := range m.layers {
+		tileSize := Vec2Of[float64](layer.TileSize)
+		// Group by sheet for sprite batching.
+		for sheetIndex := 0; sheetIndex < len(sheets); sheetIndex++ {
+			sheet := sheets[sheetIndex]
+			// TODO Use bounds, apply offsets.
+			start := Vec2i{}
+			drawSize := layer.Tiles.Size()
+			semiStride := layer.Tiles.Size().X - drawSize.X
+			tiles := layer.Tiles.Items()
+			index := layer.Tiles.Index(start)
+			offset := XY(0, 0.0)
+			for tileY := 0; tileY < drawSize.Y; tileY++ {
+				tileOp := op.Move(offset)
+				for tileX := 0; tileX < drawSize.X; tileX++ {
+					tile := tiles[index]
+					if tile.Sheet() == sheetIndex {
+						d.Sprite(sheet.At(tile.Pos()), tileOp)
+					}
+					// TODO Should move be autoscaled?
+					tileOp = tileOp.Move(XY(tileSize.X*scale.X, 0))
+					index++
+				}
+				offset.Y += tileSize.Y * scale.Y
+				index += semiStride
+			}
+		}
+	}
 }
