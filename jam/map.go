@@ -17,8 +17,8 @@ type TileLayer struct {
 }
 
 type Tile struct {
-	sheet uint16 // TODO Store as 8 bits + 2 * 12 bits for 32 bits as images?
-	pos   Vec2[uint16]
+	sheet uint8
+	pos   Vec2[uint8]
 }
 
 func NewTileMap() *TileMap {
@@ -48,13 +48,13 @@ func (m *TileMap) Sheets() []*Sheet {
 }
 
 func NewTile(sheet int, pos Vec2i) Tile {
-	if sheet < 0 || sheet > maxSheet {
+	if sheet < 0 || sheet > maxTile {
 		log.Panicf("bad sheet index: %d", sheet)
 	}
-	if pos.X < 0 || pos.X > maxPos || pos.Y < 0 || pos.Y > maxPos {
+	if pos.X < 0 || pos.X > maxTile || pos.Y < 0 || pos.Y > maxTile {
 		log.Panicf("bad pos: %v", pos)
 	}
-	return Tile{sheet: uint16(sheet), pos: Vec2Of[uint16](pos)}
+	return Tile{sheet: uint8(sheet), pos: Vec2Of[uint8](pos)}
 }
 
 func (t *Tile) Pos() Vec2i {
@@ -65,6 +65,4 @@ func (t *Tile) Sheet() int {
 	return int(t.sheet)
 }
 
-// Constrain extra in case we want to save in 32-bit values.
-const maxPos = (1 << 12) - 1
-const maxSheet = (1 << 8) - 1
+const maxTile = (1 << 8) - 1
