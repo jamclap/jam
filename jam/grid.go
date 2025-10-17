@@ -95,7 +95,7 @@ Cols:
 			if g.items[index] != empty {
 				break Cols
 			}
-			index += g.size.Y
+			index += g.size.X
 		}
 		needed.X--
 	}
