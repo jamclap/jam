@@ -103,42 +103,49 @@ func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 	d.Target.DrawImage(image, &eop)
 }
 
-func (d *Draw) TileLayer(
-	m *TileMap, l *TileLayer, bounds image.Rectangle, op Op,
+func (d *Draw) TileMap(
+	m *TileMap,
+	sheets []*Sheet,
+	pixelBounds image.Rectangle, // TODO Give grid bounds instead?
+	op Op,
 ) {
-	//
+	scale := op.GetScale()
+	tileSize := Vec2Of[float64](m.TileSize)
+	// Group by sheet for sprite batching.
+	for sheetIndex := 0; sheetIndex < len(sheets); sheetIndex++ {
+		sheet := sheets[sheetIndex]
+		// TODO Use bounds, apply offsets.
+		start := Vec2i{}
+		drawSize := m.Tiles.Size()
+		semiStride := m.Tiles.Size().X - drawSize.X
+		tiles := m.Tiles.Items()
+		index := m.Tiles.Index(start)
+		offset := XY(0, 0.0)
+		for tileY := 0; tileY < drawSize.Y; tileY++ {
+			tileOp := op.Move(offset)
+			for tileX := 0; tileX < drawSize.X; tileX++ {
+				tile := tiles[index]
+				if tile.Sheet() == sheetIndex {
+					d.Sprite(sheet.At(tile.Pos()), tileOp)
+				}
+				// TODO Should move be autoscaled?
+				tileOp = tileOp.Move(XY(tileSize.X*scale.X, 0))
+				index++
+			}
+			offset.Y += tileSize.Y * scale.Y
+			index += semiStride
+		}
+	}
 }
 
 // Always draw full tiles but only those touching pixelBounds?
-func (d *Draw) TileMap(m *TileMap, pixelBounds image.Rectangle, op Op) {
-	sheets := m.Sheets()
-	scale := op.GetScale()
-	for _, layer := range m.layers {
-		tileSize := Vec2Of[float64](layer.TileSize)
-		// Group by sheet for sprite batching.
-		for sheetIndex := 0; sheetIndex < len(sheets); sheetIndex++ {
-			sheet := sheets[sheetIndex]
-			// TODO Use bounds, apply offsets.
-			start := Vec2i{}
-			drawSize := layer.Tiles.Size()
-			semiStride := layer.Tiles.Size().X - drawSize.X
-			tiles := layer.Tiles.Items()
-			index := layer.Tiles.Index(start)
-			offset := XY(0, 0.0)
-			for tileY := 0; tileY < drawSize.Y; tileY++ {
-				tileOp := op.Move(offset)
-				for tileX := 0; tileX < drawSize.X; tileX++ {
-					tile := tiles[index]
-					if tile.Sheet() == sheetIndex {
-						d.Sprite(sheet.At(tile.Pos()), tileOp)
-					}
-					// TODO Should move be autoscaled?
-					tileOp = tileOp.Move(XY(tileSize.X*scale.X, 0))
-					index++
-				}
-				offset.Y += tileSize.Y * scale.Y
-				index += semiStride
-			}
-		}
+func (d *Draw) TileLayers(
+	layers *TileLayers,
+	pixelBounds image.Rectangle,
+	op Op,
+) {
+	sheets := layers.Sheets
+	for _, layer := range layers.Layers {
+		d.TileMap(layer, sheets, pixelBounds, op)
 	}
 }

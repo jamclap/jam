@@ -4,13 +4,12 @@ import (
 	"log"
 )
 
-type TileMap struct {
-	layers []*TileLayer
-	sheets []*Sheet
+type TileLayers struct {
+	Layers []*TileMap
+	Sheets []*Sheet
 }
 
-type TileLayer struct {
-	Hidden   bool
+type TileMap struct {
 	Offset   Vec2i
 	Tiles    Grid[Tile]
 	TileSize Vec2i
@@ -19,32 +18,6 @@ type TileLayer struct {
 type Tile struct {
 	sheet uint8
 	pos   Vec2[uint8]
-}
-
-func NewTileMap() *TileMap {
-	return &TileMap{
-		layers: []*TileLayer{&TileLayer{}},
-	}
-}
-
-func (m *TileMap) Layers() []*TileLayer {
-	return m.layers
-}
-
-// For extending by only one at a time at most.
-func (m *TileMap) SetSheet(index int, sheet *Sheet) {
-	if index > len(m.sheets) {
-		log.Panicf("index too high: %d vs %d", index, len(m.sheets))
-	}
-	if index == len(m.sheets) {
-		m.sheets = append(m.sheets, sheet)
-	} else {
-		m.sheets[index] = sheet
-	}
-}
-
-func (m *TileMap) Sheets() []*Sheet {
-	return m.sheets
 }
 
 func NewTile(sheet int, pos Vec2i) Tile {
