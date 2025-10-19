@@ -30,7 +30,7 @@ func InitState(hub *jam.Hub) jam.Game {
 		move:    jam.XY(0, 0.0),
 		pos:     jam.XY(8, 8.0),
 		sprites: jam.LoadSheet(sheetBytes, jam.XY(8, 8)),
-		scale:   2,
+		scale:   1,
 	}
 }
 
@@ -52,7 +52,7 @@ func (g *Game) Draw(draw *jam.Draw) {
 
 func (g *Game) applyPhysics() {
 	size := jam.Vec2Of[float64](g.sprites.SpriteSize()).MulAll(g.scale)
-	floor := 135.0
+	floor := 90.0
 	// Fall if in the air.
 	bottomLeft := g.pos.Add(size)
 	if bottomLeft.Y < floor {
@@ -69,25 +69,26 @@ func (g *Game) applyPhysics() {
 	}
 	// Check walls.
 	g.pos.X = max(g.pos.X, 0)
-	g.pos.X = min(g.pos.X, 240-size.X)
+	g.pos.X = min(g.pos.X, 160-size.X)
 }
 
 func (g *Game) handleInput(c jam.Control) {
 	if c.Active(jam.ActionA) {
 		if c.Duration(jam.ActionA) < 20 && g.floored {
-			g.move.Y = -6
+			g.move.Y = -5
 		}
 	} else {
 		if g.move.Y < 0 {
-			g.move.Y += 0.5
+			g.move.Y += 0.3
 		}
 	}
+	speed := 2.5
 	if c.Active(jam.ActionLeft) {
 		g.faceX = -1
-		g.move.X = -3
+		g.move.X = -speed
 	} else if c.Active(jam.ActionRight) {
 		g.faceX = 1
-		g.move.X = 3
+		g.move.X = speed
 	} else {
 		g.move.X = 0
 	}

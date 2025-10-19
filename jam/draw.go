@@ -103,6 +103,18 @@ func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 	d.Target.DrawImage(image, &eop)
 }
 
+// Always draw full tiles but only those touching pixelBounds?
+func (d *Draw) TileLayers(
+	layers *TileLayers,
+	pixelBounds image.Rectangle,
+	op Op,
+) {
+	sheets := layers.Sheets
+	for _, layer := range layers.Layers {
+		d.TileMap(layer, sheets, pixelBounds, op)
+	}
+}
+
 func (d *Draw) TileMap(
 	m *TileMap,
 	sheets []*Sheet,
@@ -125,8 +137,11 @@ func (d *Draw) TileMap(
 			tileOp := op.Move(offset)
 			for tileX := 0; tileX < drawSize.X; tileX++ {
 				tile := tiles[index]
-				if tile.Sheet() == sheetIndex {
-					d.Sprite(sheet.At(tile.Pos()), tileOp)
+				if tile.Opacity() > 0 {
+					if tile.Sheet() == sheetIndex {
+						// TODO Apply opacity.
+						d.Sprite(sheet.At(tile.Pos()), tileOp)
+					}
 				}
 				// TODO Should move be autoscaled?
 				tileOp = tileOp.Move(XY(tileSize.X*scale.X, 0))
@@ -135,17 +150,5 @@ func (d *Draw) TileMap(
 			offset.Y += tileSize.Y * scale.Y
 			index += semiStride
 		}
-	}
-}
-
-// Always draw full tiles but only those touching pixelBounds?
-func (d *Draw) TileLayers(
-	layers *TileLayers,
-	pixelBounds image.Rectangle,
-	op Op,
-) {
-	sheets := layers.Sheets
-	for _, layer := range layers.Layers {
-		d.TileMap(layer, sheets, pixelBounds, op)
 	}
 }
