@@ -65,6 +65,14 @@ func (v Vec2[T]) DivPoint(p image.Point) Vec2[T] {
 	return v
 }
 
+func (v Vec2[T]) Float64() Vec2f {
+	return Vec2Of[float64](v)
+}
+
+func (v Vec2[T]) Int() Vec2i {
+	return Vec2Of[int](v)
+}
+
 func (v Vec2[T]) Max(v2 Vec2[T]) Vec2[T] {
 	v.X = max(v.X, v2.X)
 	v.Y = max(v.Y, v2.Y)
