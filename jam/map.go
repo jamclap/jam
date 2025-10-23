@@ -1,6 +1,7 @@
 package jam
 
 import (
+	"bytes"
 	"image"
 	"image/color"
 	"image/draw"
@@ -25,6 +26,17 @@ type Tile struct {
 	opacity uint8
 	sheet   uint8
 	pos     Vec2[uint8]
+}
+
+func LoadMap(tilesBytes []byte, tileSize Vec2i) *TileMap {
+	tiles, err := LoadTiles(bytes.NewReader(tilesBytes))
+	if err != nil {
+		log.Panic(err)
+	}
+	return &TileMap{
+		Tiles:    tiles,
+		TileSize: tileSize,
+	}
 }
 
 func LoadTiles(r io.Reader) (grid Grid[Tile], err error) {

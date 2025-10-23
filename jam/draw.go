@@ -10,7 +10,8 @@ import (
 type Draw struct {
 	// Local ebiten.GeoM?
 	// Local Op?
-	Target *ebiten.Image
+	Target     *ebiten.Image
+	TileSheets []*Sheet
 }
 
 type Op struct {
@@ -74,6 +75,52 @@ func (o Op) ScaleY(y float64) Op {
 
 func (d *Draw) Fill(color color.Color) {
 	d.Target.Fill(color)
+}
+
+type MapOp struct {
+	drawOp     Op
+	size       Vec2i
+	start      Vec2i
+	tileSheets []*Sheet
+}
+
+func (o MapOp) DrawOp(op Op) MapOp {
+	o.drawOp = op
+	return o
+}
+
+func (o MapOp) Size(size Vec2i) MapOp {
+	o.size = size
+	return o
+}
+
+func (o MapOp) Start(start Vec2i) MapOp {
+	o.start = start
+	return o
+}
+
+func (o MapOp) TileSheets(tileSheets []*Sheet) MapOp {
+	o.tileSheets = tileSheets
+	return o
+}
+
+func (d *Draw) Map(m *TileMap, op MapOp) {
+	if len(op.tileSheets) == 0 {
+		op.tileSheets = d.TileSheets
+	}
+	start := op.start.Mul(m.TileSize)
+	// size := start.Add(op.size.Mul(m.TileSize))
+	size := op.size
+	if size.X == 0 && size.Y == 0 {
+		size = m.Tiles.Size().Sub(op.start)
+	}
+	end := start.Add(size.SubAll(1).Mul(m.TileSize))
+	d.TileMap(
+		m,
+		op.tileSheets,
+		image.Rectangle{Min: start.Point(), Max: end.Point()},
+		op.drawOp,
+	)
 }
 
 func (d *Draw) Sprite(image *ebiten.Image, op Op) {

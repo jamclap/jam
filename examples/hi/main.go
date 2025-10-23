@@ -20,17 +20,23 @@ type Game struct {
 	pos     jam.Vec2f
 	scale   float64
 	sprites *jam.Sheet
+	tileMap *jam.TileMap
 }
 
 func InitState(hub *jam.Hub) jam.Game {
 	hub.Window.SetTitle("Jumping Demo for Jam")
+	spriteSize := jam.XY(8, 8)
+	sprites := jam.LoadSheet(sheetBytes, spriteSize)
+	tmap := jam.LoadMap(tilesBytes, spriteSize)
+	hub.TileSheets = []*jam.Sheet{sprites}
 	return &Game{
 		faceX:   1,
 		floored: false,
 		move:    jam.XY(0, 0.0),
-		pos:     jam.XY(8, 8.0),
-		sprites: jam.LoadSheet(sheetBytes, jam.XY(8, 8)),
+		pos:     extractPlayerPos(tmap),
+		sprites: sprites,
 		scale:   1,
+		tileMap: tmap,
 	}
 }
 
@@ -42,10 +48,11 @@ func (g *Game) Update(hub *jam.Hub) {
 
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(pal.Jam[pal.JamBlue1])
+	draw.Map(g.tileMap, jam.MapOp{})
 	draw.Sprite(
 		// TODO Encourage [0.0, 1.0) indexed frame sequences?
 		// TODO Identify by metadata files, ideally from editor.
-		g.sprites.AtXY(0, int(g.frame)),
+		g.sprites.AtXY(1, int(g.frame)),
 		jam.Pos(g.pos).Scale(g.scale).ScaleX(g.faceX),
 	)
 }
@@ -106,5 +113,25 @@ func (g *Game) updateFrame() {
 	}
 }
 
+// Replace the first instance of a player tile with empty, and
+// return its position in pixels.
+func extractPlayerPos(m *jam.TileMap) jam.Vec2f {
+	size := m.Tiles.Size()
+	p := jam.Vec2i{}
+	for p.X = 0; p.X < size.X; p.X++ {
+		for p.Y = 0; p.Y < size.Y; p.Y++ {
+			tile := m.Tiles.At(p)
+			if tile.Pos().X == 1 {
+				m.Tiles.SetAt(p, jam.Tile{})
+				return p.Mul(m.TileSize).Float64()
+			}
+		}
+	}
+	return jam.Vec2f{}
+}
+
 //go:embed sheet.webp
 var sheetBytes []byte
+
+//go:embed map.png
+var tilesBytes []byte

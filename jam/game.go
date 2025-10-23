@@ -42,6 +42,7 @@ func (e *ebitenGame) Update() error {
 
 func (e *ebitenGame) Draw(image *ebiten.Image) {
 	e.draw.Target = image
+	e.draw.TileSheets = e.hub.TileSheets
 	e.game.Draw(&e.draw)
 }
 

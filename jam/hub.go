@@ -7,6 +7,7 @@ import (
 
 type Hub struct {
 	Control      *EbitenControl
+	TileSheets   []*Sheet
 	Window       Window
 	gamepadsGone []bool
 	gamepads     []ebiten.GamepadID
