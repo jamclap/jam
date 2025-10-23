@@ -82,14 +82,14 @@ func (g *Game) applyPhysics() {
 func (g *Game) handleInput(c jam.Control) {
 	if c.Active(jam.ActionA) {
 		if c.Duration(jam.ActionA) < 20 && g.floored {
-			g.move.Y = -5
+			g.move.Y = -2.3
 		}
 	} else {
 		if g.move.Y < 0 {
 			g.move.Y += 0.3
 		}
 	}
-	speed := 2.5
+	speed := 1.5
 	if c.Active(jam.ActionLeft) {
 		g.faceX = -1
 		g.move.X = -speed
