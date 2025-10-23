@@ -11,7 +11,7 @@ type Draw struct {
 	// Local ebiten.GeoM?
 	// Local Op?
 	Target     *ebiten.Image
-	TileSheets []*Sheet
+	TileSheets []*Sheet // From the hub. Used if neither op nor map has sheets.
 }
 
 type Op struct {
@@ -81,7 +81,7 @@ type MapOp struct {
 	drawOp     Op
 	size       Vec2i
 	start      Vec2i
-	tileSheets []*Sheet
+	tileSheets []*Sheet // Has priority if specified.
 }
 
 func (o MapOp) DrawOp(op Op) MapOp {
@@ -106,7 +106,10 @@ func (o MapOp) TileSheets(tileSheets []*Sheet) MapOp {
 
 func (d *Draw) Map(m *TileMap, op MapOp) {
 	if len(op.tileSheets) == 0 {
-		op.tileSheets = d.TileSheets
+		op.tileSheets = m.Sheets
+		if len(op.tileSheets) == 0 {
+			op.tileSheets = d.TileSheets
+		}
 	}
 	start := op.start.Mul(m.TileSize)
 	// size := start.Add(op.size.Mul(m.TileSize))

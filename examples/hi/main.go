@@ -28,7 +28,7 @@ func InitState(hub *jam.Hub) jam.Game {
 	spriteSize := jam.XY(8, 8)
 	sprites := jam.LoadSheet(sheetBytes, spriteSize)
 	tmap := jam.LoadMap(tilesBytes, spriteSize)
-	hub.TileSheets = []*jam.Sheet{sprites}
+	tmap.Sheets = []*jam.Sheet{sprites}
 	return &Game{
 		faceX:   1,
 		floored: false,

@@ -18,6 +18,7 @@ type TileLayers struct {
 
 type TileMap struct {
 	Offset   Vec2i
+	Sheets   []*Sheet // Has priority over draw/hub tile sheets.
 	Tiles    Grid[Tile]
 	TileSize Vec2i
 }
