@@ -28,6 +28,8 @@ func InitState(hub *jam.Hub) jam.Game {
 	spriteSize := jam.XY(8, 8)
 	sprites := jam.LoadSheet(sheetBytes, spriteSize)
 	tmap := jam.LoadMap(tilesBytes, spriteSize)
+	// TODO Uncomment for testing submaps.
+	// *tmap = tmap.SliceStart(jam.XY(1, 1)).SliceSize(jam.XY(10, 10))
 	tmap.Sheets = []*jam.Sheet{sprites}
 	return &Game{
 		faceX:   1,

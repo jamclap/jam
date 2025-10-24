@@ -77,10 +77,11 @@ func (d *Draw) Fill(color color.Color) {
 	d.Target.Fill(color)
 }
 
+// TODO Remove this if map slicing?
 type MapOp struct {
 	drawOp     Op
 	size       Vec2i
-	start      Vec2i
+	start      Vec2i    // TODO Instead slice map grid? Map values instead of pointers?
 	tileSheets []*Sheet // Has priority if specified.
 }
 
@@ -154,6 +155,7 @@ func (d *Draw) Sprite(image *ebiten.Image, op Op) {
 }
 
 // Always draw full tiles but only those touching pixelBounds?
+// TODO This makes draw bounds more meaningful, because sub layers would make a new slice.
 func (d *Draw) TileLayers(
 	layers *TileLayers,
 	pixelBounds image.Rectangle,
@@ -179,7 +181,7 @@ func (d *Draw) TileMap(
 		// TODO Use bounds, apply offsets.
 		start := Vec2i{}
 		drawSize := m.Tiles.Size()
-		semiStride := m.Tiles.Size().X - drawSize.X
+		semiStride := m.Tiles.stride - drawSize.X
 		tiles := m.Tiles.Items()
 		index := m.Tiles.Index(start)
 		offset := XY(0, 0.0)

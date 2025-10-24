@@ -29,6 +29,22 @@ type Tile struct {
 	pos     Vec2[uint8]
 }
 
+// End is exclusive.
+func (m TileMap) Slice(start Vec2i, end Vec2i) TileMap {
+	m.Tiles = m.Tiles.Slice(start, end)
+	return m
+}
+
+func (m TileMap) SliceSize(size Vec2i) TileMap {
+	m.Tiles = m.Tiles.SliceSize(size)
+	return m
+}
+
+func (m TileMap) SliceStart(start Vec2i) TileMap {
+	m.Tiles = m.Tiles.SliceStart(start)
+	return m
+}
+
 func LoadMap(tilesBytes []byte, tileSize Vec2i) *TileMap {
 	tiles, err := LoadTiles(bytes.NewReader(tilesBytes))
 	if err != nil {
