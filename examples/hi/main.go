@@ -73,7 +73,6 @@ func (g *Game) applyPhysics() {
 	tileSize := g.tileMap.TileSize.Float64()
 	tilePos0 := bottomLeft.Div(tileSize).Int()
 	aligned := g.move.Y == 0 && float64(tilePos0.Y)*tileSize.Y == bottomLeft.Y
-	unstable := g.move.X != 0 || !wasFloored
 	if !g.floored {
 		g.move.Y += 0.2
 	}
@@ -81,15 +80,18 @@ func (g *Game) applyPhysics() {
 	bottomLeft = g.pos.AddY(size.Y)
 	// Check entering floor tile.
 	tilePos1 := bottomLeft.Div(tileSize).Int()
+	fellPast := g.move.Y > 0 && tilePos0.Y != tilePos1.Y
 	if g.move.Y < 0 {
 		g.floored = false
 	} else if bottomLeft.Y > floor {
 		g.floored = true
-	} else if aligned && unstable || g.move.Y > 0 && tilePos0.Y != tilePos1.Y {
+	} else if aligned || fellPast || g.move.X != 0 {
 		g.floored = g.atFloor(bottomLeft.AddX(g.scale)) ||
 			g.atFloor(bottomLeft.AddX(size.X-2*g.scale))
-		if g.floored {
+		if aligned || fellPast {
 			floor = float64(tilePos1.Y * g.tileMap.TileSize.Y)
+		} else {
+			g.floored = g.floored && wasFloored
 		}
 	}
 	// Go up if through the floor.
