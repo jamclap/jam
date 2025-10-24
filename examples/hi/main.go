@@ -52,28 +52,50 @@ func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(pal.Jam[pal.JamBlue1])
 	draw.Map(g.tileMap, jam.MapOp{})
 	draw.Sprite(
-		// TODO Encourage [0.0, 1.0) indexed frame sequences?
-		// TODO Identify by metadata files, ideally from editor.
 		g.sprites.AtXY(1, int(g.frame)),
 		jam.Pos(g.pos).Scale(g.scale).ScaleX(g.faceX),
 	)
 }
 
+func (g *Game) atFloor(pos jam.Vec2f) bool {
+	tileSize := g.tileMap.TileSize.Float64()
+	tilePos := pos.Div(tileSize).Int()
+	tile := g.tileMap.Tiles.At(tilePos)
+	return tile == jam.NewTile(0, jam.XY(0, 0), 255) // TODO Tile tags.
+}
+
 func (g *Game) applyPhysics() {
+	wasFloored := g.floored
 	size := jam.Vec2Of[float64](g.sprites.SpriteSize()).MulAll(g.scale)
 	floor := 90.0
 	// Fall if in the air.
 	bottomLeft := g.pos.Add(size)
-	if bottomLeft.Y < floor {
+	tileSize := g.tileMap.TileSize.Float64()
+	tilePos0 := bottomLeft.Div(tileSize).Int()
+	aligned := g.move.Y == 0 && float64(tilePos0.Y)*tileSize.Y == bottomLeft.Y
+	unstable := g.move.X != 0 || !wasFloored
+	if !g.floored {
 		g.move.Y += 0.2
 	}
 	g.pos = g.pos.Add(g.move)
+	bottomLeft = g.pos.AddY(size.Y)
+	// Check entering floor tile.
+	tilePos1 := bottomLeft.Div(tileSize).Int()
+	if g.move.Y < 0 {
+		g.floored = false
+	} else if bottomLeft.Y > floor {
+		g.floored = true
+	} else if aligned && unstable || g.move.Y > 0 && tilePos0.Y != tilePos1.Y {
+		g.floored = g.atFloor(bottomLeft.AddX(g.scale)) ||
+			g.atFloor(bottomLeft.AddX(size.X-2*g.scale))
+		if g.floored {
+			floor = float64(tilePos1.Y * g.tileMap.TileSize.Y)
+		}
+	}
 	// Go up if through the floor.
-	bottomLeft = g.pos.Add(size)
-	excess := bottomLeft.Y - floor
-	g.floored = excess >= 0
-	if g.floored {
+	if !wasFloored && g.floored {
 		g.move.Y = 0
+		excess := bottomLeft.Y - floor
 		g.pos.Y -= excess
 	}
 	// Check walls.
