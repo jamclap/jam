@@ -18,7 +18,6 @@ type Game struct {
 	frame   float64
 	move    jam.Vec2f
 	pos     jam.Vec2f
-	scale   float64
 	sprites *jam.Sheet
 	tileMap *jam.TileMap
 }
@@ -37,7 +36,6 @@ func InitState(hub *jam.Hub) jam.Game {
 		move:    jam.XY(0, 0.0),
 		pos:     extractPlayerPos(tmap),
 		sprites: sprites,
-		scale:   1,
 		tileMap: tmap,
 	}
 }
@@ -51,10 +49,7 @@ func (g *Game) Update(hub *jam.Hub) {
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(pal.Jam[pal.JamBlue1])
 	draw.Map(g.tileMap, jam.MapOp{})
-	draw.Sprite(
-		g.sprites.AtXY(1, int(g.frame)),
-		jam.Pos(g.pos).Scale(g.scale).ScaleX(g.faceX),
-	)
+	draw.Sprite(g.sprites.AtXY(1, int(g.frame)), jam.Pos(g.pos).ScaleX(g.faceX))
 }
 
 func (g *Game) atFloor(pos jam.Vec2f) bool {
@@ -66,7 +61,7 @@ func (g *Game) atFloor(pos jam.Vec2f) bool {
 
 func (g *Game) applyPhysics() {
 	wasFloored := g.floored
-	size := jam.Vec2Of[float64](g.sprites.SpriteSize()).MulAll(g.scale)
+	size := jam.Vec2Of[float64](g.sprites.SpriteSize())
 	floor := 90.0
 	// Fall if in the air.
 	bottomLeft := g.pos.Add(size)
@@ -86,8 +81,8 @@ func (g *Game) applyPhysics() {
 	} else if bottomLeft.Y > floor {
 		g.floored = true
 	} else if aligned || fellPast || g.move.X != 0 {
-		g.floored = g.atFloor(bottomLeft.AddX(g.scale)) ||
-			g.atFloor(bottomLeft.AddX(size.X-2*g.scale))
+		g.floored = g.atFloor(bottomLeft.AddX(1)) ||
+			g.atFloor(bottomLeft.AddX(size.X-2))
 		if aligned || fellPast {
 			floor = float64(tilePos1.Y * g.tileMap.TileSize.Y)
 		} else {
