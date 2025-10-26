@@ -21,7 +21,7 @@ type Game struct {
 	move    jam.Vec2f
 	pos     jam.Vec2f
 	sprites *jam.Sheet
-	stars   ParticlesFlat
+	stars   []Particle
 	tileMap *jam.TileMap
 }
 
@@ -29,14 +29,6 @@ type Particle struct {
 	tile  jam.Vec2i
 	pos   jam.Vec2f
 	speed float64
-}
-
-type ParticlesFlat struct {
-	parts []Particle
-}
-
-type ParticlesRef struct {
-	parts []*Particle
 }
 
 func InitState(hub *jam.Hub) jam.Game {
@@ -68,8 +60,8 @@ var bgColor color.Color = pal.Jam[pal.JamBlue1]
 
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(bgColor)
-	for _, part := range g.stars.parts {
-		draw.Sprite(g.sprites.At(part.tile), jam.Pos(part.pos))
+	for _, star := range g.stars {
+		draw.Sprite(g.sprites.At(star.tile), jam.Pos(star.pos))
 	}
 	draw.Map(g.tileMap, jam.MapOp{})
 	draw.Sprite(g.sprites.AtXY(1, int(g.frame)), jam.Pos(g.pos).ScaleX(g.faceX))
@@ -81,28 +73,28 @@ func (g *Game) moveStars() {
 		return
 	}
 	for i := 0; i < int(6*speed); i++ {
-		part := Particle{
+		star := Particle{
 			tile:  jam.XY(2, 2),
 			pos:   jam.XY(160+rand.Float64()*50, rand.Float64()*81-5),
 			speed: (rand.Float64() * 0.5) + 1,
 		}
-		g.stars.parts = append(g.stars.parts, part)
+		g.stars = append(g.stars, star)
 	}
-	for i := range g.stars.parts {
-		part := &g.stars.parts[i]
-		part.pos.X -= speed * part.speed
+	for i := range g.stars {
+		star := &g.stars[i]
+		star.pos.X -= speed * star.speed
 	}
-	for i := 0; i < len(g.stars.parts); {
-		part := &g.stars.parts[i]
-		if part.pos.X < -8 {
-			last := len(g.stars.parts) - 1
-			g.stars.parts[i] = g.stars.parts[last]
-			g.stars.parts = g.stars.parts[:last]
+	for i := 0; i < len(g.stars); {
+		star := &g.stars[i]
+		if star.pos.X < -8 {
+			last := len(g.stars) - 1
+			g.stars[i] = g.stars[last]
+			g.stars = g.stars[:last]
 		} else {
 			i++
 		}
 	}
-	// print(len(g.stars.parts))
+	// print(len(g.stars))
 	// print(", ")
 }
 
@@ -214,7 +206,7 @@ func (g *Game) extractStars(m *jam.TileMap) {
 			tileX := tile.Pos().X
 			if tileX == 2 || tileX >= 4 {
 				m.Tiles.SetAt(p, jam.Tile{})
-				g.stars.parts = append(g.stars.parts, Particle{
+				g.stars = append(g.stars, Particle{
 					tile:  tile.Pos(),
 					pos:   p.Mul(g.tileMap.TileSize).Float64(),
 					speed: 1,
