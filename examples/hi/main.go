@@ -2,7 +2,9 @@ package main
 
 import (
 	_ "embed"
+	"image/color"
 	"math"
+	"math/rand"
 
 	"github.com/jamclap/jam/jam"
 	"github.com/jamclap/jam/jam/pal"
@@ -19,7 +21,22 @@ type Game struct {
 	move    jam.Vec2f
 	pos     jam.Vec2f
 	sprites *jam.Sheet
+	stars   ParticlesFlat
 	tileMap *jam.TileMap
+}
+
+type Particle struct {
+	tile  jam.Vec2i
+	pos   jam.Vec2f
+	speed float64
+}
+
+type ParticlesFlat struct {
+	parts []Particle
+}
+
+type ParticlesRef struct {
+	parts []*Particle
 }
 
 func InitState(hub *jam.Hub) jam.Game {
@@ -30,26 +47,63 @@ func InitState(hub *jam.Hub) jam.Game {
 	// TODO Uncomment for testing submaps.
 	// *tmap = tmap.SliceStart(jam.XY(1, 1)).SliceSize(jam.XY(10, 10))
 	tmap.Sheets = []*jam.Sheet{sprites}
-	return &Game{
+	g := &Game{
 		faceX:   1,
-		floored: false,
-		move:    jam.XY(0, 0.0),
 		pos:     extractPlayerPos(tmap),
 		sprites: sprites,
 		tileMap: tmap,
 	}
+	g.extractStars(tmap)
+	return g
 }
 
 func (g *Game) Update(hub *jam.Hub) {
 	g.handleInput(hub.Control)
 	g.applyPhysics()
+	g.moveStars()
 	g.updateFrame()
 }
 
+var bgColor color.Color = pal.Jam[pal.JamBlue1]
+
 func (g *Game) Draw(draw *jam.Draw) {
-	draw.Fill(pal.Jam[pal.JamBlue1])
+	draw.Fill(bgColor)
+	for _, part := range g.stars.parts {
+		draw.Sprite(g.sprites.At(part.tile), jam.Pos(part.pos))
+	}
 	draw.Map(g.tileMap, jam.MapOp{})
 	draw.Sprite(g.sprites.AtXY(1, int(g.frame)), jam.Pos(g.pos).ScaleX(g.faceX))
+}
+
+func (g *Game) moveStars() {
+	speed := (56 - g.pos.Y) / 10
+	if speed < 0 {
+		return
+	}
+	for i := 0; i < int(6*speed); i++ {
+		part := Particle{
+			tile:  jam.XY(2, 2),
+			pos:   jam.XY(160+rand.Float64()*50, rand.Float64()*81-5),
+			speed: (rand.Float64() * 0.5) + 1,
+		}
+		g.stars.parts = append(g.stars.parts, part)
+	}
+	for i := range g.stars.parts {
+		part := &g.stars.parts[i]
+		part.pos.X -= speed * part.speed
+	}
+	for i := 0; i < len(g.stars.parts); {
+		part := &g.stars.parts[i]
+		if part.pos.X < -8 {
+			last := len(g.stars.parts) - 1
+			g.stars.parts[i] = g.stars.parts[last]
+			g.stars.parts = g.stars.parts[:last]
+		} else {
+			i++
+		}
+	}
+	// print(len(g.stars.parts))
+	// print(", ")
 }
 
 func (g *Game) atFloor(pos jam.Vec2f) bool {
@@ -61,7 +115,7 @@ func (g *Game) atFloor(pos jam.Vec2f) bool {
 
 func (g *Game) applyPhysics() {
 	wasFloored := g.floored
-	size := jam.Vec2Of[float64](g.sprites.SpriteSize())
+	size := g.sprites.SpriteSize().Float64()
 	floor := 90.0
 	// Fall if in the air.
 	bottomLeft := g.pos.Add(size)
@@ -149,6 +203,25 @@ func extractPlayerPos(m *jam.TileMap) jam.Vec2f {
 		}
 	}
 	return jam.Vec2f{}
+}
+
+func (g *Game) extractStars(m *jam.TileMap) {
+	size := m.Tiles.Size()
+	p := jam.Vec2i{}
+	for p.X = 0; p.X < size.X; p.X++ {
+		for p.Y = 0; p.Y < size.Y; p.Y++ {
+			tile := m.Tiles.At(p)
+			tileX := tile.Pos().X
+			if tileX == 2 || tileX >= 4 {
+				m.Tiles.SetAt(p, jam.Tile{})
+				g.stars.parts = append(g.stars.parts, Particle{
+					tile:  tile.Pos(),
+					pos:   p.Mul(g.tileMap.TileSize).Float64(),
+					speed: 1,
+				})
+			}
+		}
+	}
 }
 
 //go:embed sheet.webp
