@@ -2,7 +2,6 @@ package run
 
 import (
 	"github.com/traefik/yaegi/interp"
-	"github.com/traefik/yaegi/stdlib"
 )
 
 func Run(script string) error {
@@ -13,7 +12,7 @@ func Run(script string) error {
 
 func RunPath(path string) error {
 	i := interp.New(interp.Options{})
-	i.Use(stdlib.Symbols)
+	// i.Use(stdlib.Symbols)
 	_, err := i.EvalPath(path)
 	return err
 }
