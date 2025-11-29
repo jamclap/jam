@@ -1,8 +1,6 @@
 package main
 
 import (
-	"image/color"
-
 	"github.com/jamclap/jam/jam"
 	"github.com/jamclap/jam/jam/pal"
 )
@@ -21,8 +19,6 @@ func InitState(hub *jam.Hub) jam.Game {
 
 func (g *Game) Update(hub *jam.Hub) {}
 
-var bgColor color.Color = pal.Jam.Blue1
-
 func (g *Game) Draw(draw *jam.Draw) {
-	draw.Fill(bgColor)
+	draw.Fill(pal.Jam.Blue1)
 }

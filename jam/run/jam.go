@@ -9,12 +9,15 @@ import (
 )
 
 var jamExports = interp.Exports{
+	"embed/embed": {},
 	"github.com/jamclap/jam/jam/jam": {
-		"Draw":  reflect.ValueOf((*jam.Draw)(nil)),
-		"Game":  reflect.ValueOf((*jam.Game)(nil)),
-		"Hub":   reflect.ValueOf((*jam.Hub)(nil)),
-		"Run":   reflect.ValueOf(jam.Run),
-		"_Game": reflect.ValueOf((*_jam_Game)(nil)),
+		"Draw":    reflect.ValueOf((*jam.Draw)(nil)),
+		"Game":    reflect.ValueOf((*jam.Game)(nil)),
+		"Hub":     reflect.ValueOf((*jam.Hub)(nil)),
+		"LoadMap": reflect.ValueOf(jam.LoadMap),
+		"Run":     reflect.ValueOf(jam.Run),
+		"XY":      reflect.ValueOf(jam.XY[int]), // TODO Generic???
+		"_Game":   reflect.ValueOf((*_jam_Game)(nil)),
 	},
 	"github.com/jamclap/jam/jam/pal/pal": {
 		"Jam": reflect.ValueOf(pal.Jam),
