@@ -17,8 +17,7 @@ var jamExports = interp.Exports{
 		"_Game": reflect.ValueOf((*_jam_Game)(nil)),
 	},
 	"github.com/jamclap/jam/jam/pal/pal": {
-		"Jam":      reflect.ValueOf(pal.Jam),
-		"JamBlue1": reflect.ValueOf(pal.JamBlue1),
+		"Jam": reflect.ValueOf(pal.Jam),
 	},
 }
 

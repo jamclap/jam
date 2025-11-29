@@ -56,7 +56,7 @@ func (g *Game) Update(hub *jam.Hub) {
 	g.updateFrame()
 }
 
-var bgColor color.Color = pal.Jam[pal.JamBlue1]
+var bgColor color.Color = pal.Jam.Blue1
 
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(bgColor)

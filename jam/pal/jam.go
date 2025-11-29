@@ -2,43 +2,7 @@ package pal
 
 import "image/color"
 
-const (
-	JamBrown0   int = iota // Color 0
-	JamBrown1              // Color 1
-	JamBrown2              // Color 2
-	JamBrown3              // Color 3
-	JamBrown4              // Color 4
-	JamBrown5              // Color 5
-	JamBrown6              // Color 6
-	JamGreen3              // Color 7
-	JamGreen2              // Color 8
-	JamGreen1              // Color 9
-	JamGreen0              // Color 10
-	JamGray0               // Color 11
-	JamGray1               // Color 12
-	JamGray2               // Color 13
-	JamGray3               // Color 14
-	JamGray4               // Color 15
-	JamGray5               // Color 16
-	JamBlue4               // Color 17
-	JamBlue3               // Color 18
-	JamBlue2               // Color 19
-	JamBlue1               // Color 20
-	JamBlue0               // Color 21
-	JamPurple0             // Color 22
-	JamPurple1             // Color 23
-	JamPurple2             // Color 24
-	JamPurple3             // Color 25
-	JamWarm4               // Color 26
-	JamWarm3               // Color 27
-	JamWarm2               // Color 28
-	JamWarm1               // Color 29
-	JamWarm0               // Color 30
-	JamPurple1B            // Color 31
-)
-
-// Zughy32 but with contrast dialed up a bit and yellow instead of bonus gray.
-var Jam = []color.RGBA{
+var jamColors = []color.RGBA{
 	{0x3d, 0x17, 0x2f, 0xff}, // Color 0
 	{0x58, 0x26, 0x38, 0xff}, // Color 1
 	{0x77, 0x39, 0x41, 0xff}, // Color 2
@@ -71,4 +35,50 @@ var Jam = []color.RGBA{
 	{0xe7, 0x3e, 0x19, 0xff}, // Color 29
 	{0xa8, 0x2d, 0x2d, 0xff}, // Color 30
 	{0x7f, 0x6c, 0x92, 0xff}, // Color 31
+}
+
+// Zughy32 but with contrast dialed up a bit and yellow instead of bonus gray.
+var Jam = struct {
+	Colors                                                 []color.RGBA
+	Brown0, Brown1, Brown2, Brown3, Brown4, Brown5, Brown6 color.RGBA
+	Green3, Green2, Green1, Green0                         color.RGBA
+	Gray0, Gray1, Gray2, Gray3, Gray4, Gray5               color.RGBA
+	Blue4, Blue3, Blue2, Blue1, Blue0                      color.RGBA
+	Purple0, Purple1, Purple2, Purple3                     color.RGBA
+	Warm4, Warm3, Warm2, Warm1, Warm0                      color.RGBA
+	Purple1B                                               color.RGBA
+}{
+	Colors:   jamColors,
+	Brown0:   jamColors[0],
+	Brown1:   jamColors[1],
+	Brown2:   jamColors[2],
+	Brown3:   jamColors[3],
+	Brown4:   jamColors[4],
+	Brown5:   jamColors[5],
+	Brown6:   jamColors[6],
+	Green3:   jamColors[7],
+	Green2:   jamColors[8],
+	Green1:   jamColors[9],
+	Green0:   jamColors[10],
+	Gray0:    jamColors[11],
+	Gray1:    jamColors[12],
+	Gray2:    jamColors[13],
+	Gray3:    jamColors[14],
+	Gray4:    jamColors[15],
+	Gray5:    jamColors[16],
+	Blue4:    jamColors[17],
+	Blue3:    jamColors[18],
+	Blue2:    jamColors[19],
+	Blue1:    jamColors[20],
+	Blue0:    jamColors[21],
+	Purple0:  jamColors[22],
+	Purple1:  jamColors[23],
+	Purple2:  jamColors[24],
+	Purple3:  jamColors[25],
+	Warm4:    jamColors[26],
+	Warm3:    jamColors[27],
+	Warm2:    jamColors[28],
+	Warm1:    jamColors[29],
+	Warm0:    jamColors[30],
+	Purple1B: jamColors[31],
 }

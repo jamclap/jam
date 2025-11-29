@@ -2,43 +2,7 @@ package pal
 
 import "image/color"
 
-const (
-	ZughyBrown0   int = iota // Color 0
-	ZughyBrown1              // Color 1
-	ZughyBrown2              // Color 2
-	ZughyBrown3              // Color 3
-	ZughyBrown4              // Color 4
-	ZughyBrown5              // Color 5
-	ZughyBrown6              // Color 6
-	ZughyGreen3              // Color 7
-	ZughyGreen2              // Color 8
-	ZughyGreen1              // Color 9
-	ZughyGreen0              // Color 10
-	ZughyGray0               // Color 11
-	ZughyGray1               // Color 12
-	ZughyGray2               // Color 13
-	ZughyGray3               // Color 14
-	ZughyGray4               // Color 15
-	ZughyGray5               // Color 16
-	ZughyBlue4               // Color 17
-	ZughyBlue3               // Color 18
-	ZughyBlue2               // Color 19
-	ZughyBlue1               // Color 20
-	ZughyBlue0               // Color 21
-	ZughyPurple0             // Color 22
-	ZughyPurple1             // Color 23
-	ZughyPurple2             // Color 24
-	ZughyPurple3             // Color 25
-	ZughyWarm3               // Color 26
-	ZughyWarm2               // Color 27
-	ZughyWarm1               // Color 28
-	ZughyWarm0               // Color 29
-	ZughyPurple1B            // Color 30
-	ZughyGrayB               // Color 31
-)
-
-// The original Zughy 32 palette: https://lospec.com/palette-list/zughy-32
-var Zughy = []color.RGBA{
+var zughyColors = []color.RGBA{
 	{0x47, 0x2d, 0x3c, 0xff}, // Color 0
 	{0x5e, 0x36, 0x43, 0xff}, // Color 1
 	{0x7a, 0x44, 0x4a, 0xff}, // Color 2
@@ -71,4 +35,50 @@ var Zughy = []color.RGBA{
 	{0xa9, 0x3b, 0x3b, 0xff}, // Color 29
 	{0x82, 0x70, 0x94, 0xff}, // Color 30
 	{0x4f, 0x54, 0x6b, 0xff}, // Color 31
+}
+
+// The original Zughy 32 palette: https://lospec.com/palette-list/zughy-32
+var Zughy = struct {
+	Colors                                                 []color.RGBA
+	Brown0, Brown1, Brown2, Brown3, Brown4, Brown5, Brown6 color.RGBA
+	Green3, Green2, Green1, Green0                         color.RGBA
+	Gray0, Gray1, Gray2, Gray3, Gray4, Gray5               color.RGBA
+	Blue4, Blue3, Blue2, Blue1, Blue0                      color.RGBA
+	Purple0, Purple1, Purple2, Purple3                     color.RGBA
+	Warm3, Warm2, Warm1, Warm0                             color.RGBA
+	Purple1B, ZughyGrayB                                   color.RGBA
+}{
+	Colors:     zughyColors,
+	Brown0:     zughyColors[0],
+	Brown1:     zughyColors[1],
+	Brown2:     zughyColors[2],
+	Brown3:     zughyColors[3],
+	Brown4:     zughyColors[4],
+	Brown5:     zughyColors[5],
+	Brown6:     zughyColors[6],
+	Green3:     zughyColors[7],
+	Green2:     zughyColors[8],
+	Green1:     zughyColors[9],
+	Green0:     zughyColors[10],
+	Gray0:      zughyColors[11],
+	Gray1:      zughyColors[12],
+	Gray2:      zughyColors[13],
+	Gray3:      zughyColors[14],
+	Gray4:      zughyColors[15],
+	Gray5:      zughyColors[16],
+	Blue4:      zughyColors[17],
+	Blue3:      zughyColors[18],
+	Blue2:      zughyColors[19],
+	Blue1:      zughyColors[20],
+	Blue0:      zughyColors[21],
+	Purple0:    zughyColors[22],
+	Purple1:    zughyColors[23],
+	Purple2:    zughyColors[24],
+	Purple3:    zughyColors[25],
+	Warm3:      zughyColors[26],
+	Warm2:      zughyColors[27],
+	Warm1:      zughyColors[28],
+	Warm0:      zughyColors[29],
+	Purple1B:   zughyColors[30],
+	ZughyGrayB: zughyColors[31],
 }

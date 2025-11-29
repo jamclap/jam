@@ -21,7 +21,7 @@ func InitState(hub *jam.Hub) jam.Game {
 
 func (g *Game) Update(hub *jam.Hub) {}
 
-var bgColor color.Color = pal.Jam[pal.JamBlue1]
+var bgColor color.Color = pal.Jam.Blue1
 
 func (g *Game) Draw(draw *jam.Draw) {
 	draw.Fill(bgColor)
