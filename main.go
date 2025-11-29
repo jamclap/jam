@@ -12,19 +12,8 @@ func main() {
 		return
 	}
 	path := os.Args[1]
-	err := run.RunPath(path)
-	// b, err := os.ReadFile(path)
-	// if err != nil {
-	// 	log.Panic(err)
-	// }
-	// source := string(b)
-	// 	err := run.Run(`
-	// package main
-
-	// func main() {
-	// 	println("Hi!")
-	// }
-	// 	`)
+	r := run.NewRunner()
+	err := r.RunPath(path)
 	if err != nil {
 		log.Panic(err)
 	}
